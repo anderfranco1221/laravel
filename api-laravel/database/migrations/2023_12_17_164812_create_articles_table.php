@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('content');
             $table->foreignId('category_id')->constrained('categories');//->cascadeOnDelete()->cascadeOnUpdate();
-            //$table->unsignedBigInteger('user_id');
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

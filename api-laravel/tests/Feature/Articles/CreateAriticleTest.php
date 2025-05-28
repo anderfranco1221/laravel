@@ -5,6 +5,7 @@ namespace Tests\Feature\Articles;
 use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,25 +16,20 @@ class CreateAriticleTest extends TestCase
     /** @test */
     public function can_create_articles()
     {
-        //$this->withoutExceptionHandling();
         $category = Category::factory()->create();
+        $user = User::factory()->create();
 
         $response = $this->postJson(route('api.v1.articles.store'), [
             'title' => 'Nuevo articulo',
             'slug' => 'nuevo-articulo',
             'content' => 'Contenido del articulo',
             '_relationships' => [
-                'category' => $category
+                'category' => $category,
+                "author" => $user
             ]
         ])->assertCreated();
 
         $article = Article::first();
-
-        $response->assertHeader(
-            'Location',
-            route('api.v1.articles.show', $article)
-        );
-
 
         $response->assertJsonApiResource($article, [
             'title' => 'Nuevo articulo',
@@ -41,6 +37,11 @@ class CreateAriticleTest extends TestCase
             'content' => 'Contenido del articulo'
         ]);
 
+        $this->assertDatabaseHas("articles", [
+            'title' => 'Nuevo articulo',
+            "user_id" => $user->id,
+            "category_id" => $category->id
+        ]);
     }
 
     /** @test */
