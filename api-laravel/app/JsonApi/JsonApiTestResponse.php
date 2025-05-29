@@ -5,6 +5,7 @@ use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\Assert as PHPUnit;
 
     class JsonApiTestResponse
     {

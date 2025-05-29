@@ -21,8 +21,11 @@ class ArticleAuthorController extends Controller
 
     public function update(Article $article, Request $request)
     {
-        $author = User::find($request->input("data.id"));
-        $article->update(["user_id" => $author->id]);
+        $request->validate([
+            "data.id" => ["required", "exists:users,id"]
+        ]);
+
+        $article->update(["user_id" => $request->input("data.id")]);
 
         return AuthorResources::identifier($article->author);
     }

@@ -71,6 +71,28 @@ class AuthorRelationshipTest extends TestCase
             "title" => $article->title,
             "user_id" => $author->id
         ]);
+    }
 
+    /** @test */
+    public function author_must_exist_in_database()
+    {
+        $article = Article::factory()->create();
+
+        $url = route("api.v1.articles.relationships.author", $article);
+
+        $this->withoutJsonApiDocumentFormatting();
+
+        $response = $this->patchJson($url, [
+            "data" => [
+                "type" => "author",
+                "id" => "no-existing"
+            ]
+        ])->assertJsonApiValidationErrors("data.id");
+
+
+        $this->assertDatabaseHas("articles", [
+            "title" => $article->title,
+            "user_id" => $article->user_id
+        ]);
     }
 }
