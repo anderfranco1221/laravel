@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\ArticleAuthorController;
+use App\Http\Controllers\ArticleCategoryController;
 
 /*
 Route::bind('article', function($article){
@@ -24,16 +26,22 @@ Route::apiResource('categories', CategoryController::class)
 Route::apiResource('author', AuthorController::class)
     ->only('index', 'show');
 
-Route::get('articles/{article}/relationships/category', fn()=> 'TODO')
+Route::get('articles/{article}/relationships/category', [ArticleCategoryController::class, "index"])
     ->name('articles.relationships.category');
 
-Route::get('articles/{article}/category', fn()=> 'TODO')
+Route::patch('articles/{article}/relationships/category', [ArticleCategoryController::class, "update"])
+    ->name('articles.relationships.category');
+
+Route::get('articles/{article}/category', [ArticleCategoryController::class, "show"])
     ->name('articles.category');
 
-Route::get('articles/{article}/relationships/author', fn()=> 'TODO')
+Route::get('articles/{article}/relationships/author', [ArticleAuthorController::class, "index"])
     ->name('articles.relationships.author');
 
-Route::get('articles/{article}/author', fn()=> 'TODO')
+Route::patch('articles/{article}/relationships/author', [ArticleAuthorController::class, "update"])
+    ->name('articles.relationships.author');
+
+Route::get('articles/{article}/author', [ArticleAuthorController::class, "show"])
     ->name('articles.author');
     //    ->names('api.v1.categories')
 //});
