@@ -44,7 +44,7 @@ class ListArticlesTest extends TestCase
     }
 
     /** @test */
-    function can_fetch_all_articles(){
+    public function can_fetch_all_articles(){
         //$this->withoutExceptionHandling();
 
         $articles = Article::factory()->count(3)->create();
@@ -54,5 +54,25 @@ class ListArticlesTest extends TestCase
         $response->assertJsonApiResourceCollection($articles, [
             'title', 'slug', 'content'
         ]);
+    }
+
+    /** @test */
+    public function it_returns_a_json_api_error_object_when_an_article_is_not_found()
+    {
+        $this->getJson(route('api.v1.articles.show', "not-exist"))
+            ->assertJsonApiError(
+            title: "Not Found",
+            detail: "No records found with the id 'not-exist' in the 'articles' resource.",
+            status: "404");
+
+        /* $response->assertJsonStructure([
+            "errors" => [
+                "*" => []
+            ]
+        ])->assertJsonFragment([
+            "title" => "Not Found",
+            "detail" => "No records found with the id 'not-exist' in the 'articles' resource.",
+            "status" => "404"
+        ])->assertStatus(404); */
     }
 }

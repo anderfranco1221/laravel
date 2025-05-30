@@ -92,7 +92,11 @@ class IncludeCategoryTest extends TestCase
             'include' => 'unknown'
         ]);
 
-        $this->getJson($url)->assertStatus(400);
+        $this->getJson($url)->assertJsonApiError(
+            title: "Bad Request",
+            detail: "The include relationship 'unknown' is not in the 'articles' resource.",
+            status: "400"
+        );
 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\JsonApi;
 use Closure;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 
     class JsonApiQueryBuilder
@@ -22,7 +23,8 @@ use Illuminate\Support\Str;
 
                         $sortField = ltrim($sortField, '-');
 
-                        abort_unless(in_array($sortField, $allowedSorts),400);
+                        if(!in_array($sortField, $allowedSorts))
+                            throw new BadRequestHttpException("The sort field '{$sortField}' is not in the '{$this->getResourceType()}' resource.");
 
                         $this->orderBy($sortField, $sortDirection);
                     }
@@ -38,7 +40,9 @@ use Illuminate\Support\Str;
                 /** @var Builder $this */
                 foreach(request('filter', []) as $filter => $value){
 
-                    abort_unless(in_array($filter, $allowedFilters), 400);
+                    //abort_unless(in_array($filter, $allowedFilters), 400);
+                    if(! in_array($filter, $allowedFilters))
+                        throw new BadRequestHttpException("The filter '{$filter}' is not in the '{$this->getResourceType()}' resource.");
 
                     $this->hasNamedScope($filter)
                         ? $this->{$filter}($value)
@@ -60,10 +64,13 @@ use Illuminate\Support\Str;
                 $includes = explode(',', request()->input('include'));
 
                 foreach($includes as $include){
-                    abort_unless(in_array($include, $allowedIncludes), 400);
+                    //abort_unless(in_array($include, $allowedIncludes), 400);
+                    if(! in_array($include, $allowedIncludes))
+                        throw new BadRequestHttpException("The include relationship '{$include}' is not in the '{$this->getResourceType()}' resource.");
+
                     $this->with($include);
                 }
-                
+
                 return $this;
             };
         }
