@@ -7,11 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Http\Requests\SaveArticleRequest;
 use App\Http\Resources\ArticleCollection;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ArticleController extends Controller
 {
+    public function __construct() {
+        $this->middleware("auth:sanctum", [
+            "only" => ["store", "update", "destroy"]
+        ]);
+    }
+
     public function index(): AnonymousResourceCollection{
 
         $articles = Article::query()
@@ -41,13 +49,17 @@ class ArticleController extends Controller
 
     public function update(Article $article, SaveArticleRequest $request): ArticleResource
     {
+        $this->authorize("update", $article);
 
         $article->update($request->validated());
 
         return ArticleResource::make($article);
     }
 
-    public function destroy(Article $article){
+    public function destroy(Article $article, Request $request){
+
+        $this->authorize("delete", $article);
+
         $article->delete();
 
         return response()->noContent();

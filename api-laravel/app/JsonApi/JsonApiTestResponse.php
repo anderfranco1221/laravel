@@ -4,7 +4,6 @@ namespace App\JsonApi;
 use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
-use InvalidArgumentException;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\Assert as PHPUnit;
 
@@ -22,7 +21,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
                             "*" => ["title", "detail"]
                         ]
                     ]);
-                }catch (InvalidArgumentException $e){
+                }catch (ExpectationFailedException $e){
                     PHPUnit::fail(
                         "Error objects MUST be returned as an array keyed by errors in the top level of a JSON:API document"
                         .PHP_EOL.PHP_EOL.
