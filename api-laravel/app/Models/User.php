@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Permission;
 use App\Models\Traits\HasUuid;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -45,4 +46,13 @@ class User extends Authenticatable
     ];
 
     public $resourceType = "author";
+
+    public function permissions(){
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function givePermissionTo(Permission $permission)
+    {
+        $this->permissions()->syncWithoutDetaching($permission);
+    }
 }
