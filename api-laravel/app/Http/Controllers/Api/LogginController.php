@@ -11,6 +11,9 @@ use Illuminate\Validation\ValidationException;
 
 class LogginController extends Controller
 {
+    public function __construct() {
+        $this->middleware("guest:sanctum");
+    }
 
     public function __invoke(Request $request)
     {

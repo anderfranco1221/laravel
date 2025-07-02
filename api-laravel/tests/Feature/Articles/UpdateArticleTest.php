@@ -3,11 +3,12 @@
 namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
-use App\Models\Article;
 use App\Models\User;
+use App\Models\Article;
+use App\Models\Category;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 class UpdateArticleTest extends TestCase
 {
@@ -46,6 +47,35 @@ class UpdateArticleTest extends TestCase
             'title' => 'Update articulo',
             'slug' => $article->slug,
             'content' => 'Actualizar contenido del articulo'
+        ]);
+    }
+
+    /** @test */
+    public function can_update_owned_articles_with_relationships()
+    {
+        $article = Article::factory()->create();
+        $category = Category::factory()->create();
+
+        Sanctum::actingAs($article->author, ["article:update"]);
+
+        $response = $this->patchJson(route('api.v1.articles.update', $article), [
+            'title' => 'Update articulo',
+            'slug' => $article->slug,
+            'content' => 'Actualizar contenido del articulo',
+            "_relationships" => [ "category" => $category ]
+        ])->assertOk();
+
+        $article = Article::first();
+
+        $response->assertJsonApiResource($article, [
+            'title' => 'Update articulo',
+            'slug' => $article->slug,
+            'content' => 'Actualizar contenido del articulo'
+        ]);
+
+        $this->assertDatabaseHas("articles", [
+            'title' => 'Update articulo',
+            "category_id" => $category->id
         ]);
     }
 
@@ -116,19 +146,13 @@ class UpdateArticleTest extends TestCase
     /** @test */
     public function content_is_required()
     {
-        //$this->withoutExceptionHandling();
         $article = Article::factory()->create();
         Sanctum::actingAs($article->author);
 
-        $response = $this->patchJson(route('api.v1.articles.update', $article), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'title' => 'Update articulo',
-                    'slug' => 'update-articulo',
-                ]
-            ]
-        ]);
+        $response = $this->patchJson(route('api.v1.articles.update', $article),[
+            'title' => 'Update articulo',
+            'slug' => 'update-articulo',
+                ]);
 
         $response->assertJsonApiValidationErrors('content');
 

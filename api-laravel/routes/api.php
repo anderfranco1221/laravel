@@ -3,12 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\Api\LogginController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\RegisterController;
+use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
-use App\Http\Middleware\ValidateJsonApiDocument;
+use App\Http\Middleware\ValidateJsonApiHeaders;
 
 /*
 Route::bind('article', function($article){
@@ -48,8 +51,14 @@ Route::get('articles/{article}/author', [ArticleAuthorController::class, "show"]
     //    ->names('api.v1.categories')
 //});
 
-Route::withoutMiddleware(ValidateJsonApiDocument::class)
-    ->post("login", LogginController::class)->name("login");
+Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])
+    ->group(function(){
+        Route::post("login", LogginController::class)->name("login");
+        Route::post("logout", LogoutController::class)->name("logout");
+        Route::post("register", RegisterController::class)->name("register");
+
+    });
+
 /*
 Route::apiResource([
     'articles' => ArticleController::class,

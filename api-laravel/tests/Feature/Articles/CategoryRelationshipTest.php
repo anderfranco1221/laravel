@@ -52,7 +52,7 @@ class CategoryRelationshipTest extends TestCase
 
         $url = route("api.v1.articles.relationships.category", $article);
 
-        $this->withoutJsonApiDocumentFormatting();
+        //$this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
             "data" => [
@@ -82,7 +82,7 @@ class CategoryRelationshipTest extends TestCase
 
         $url = route("api.v1.articles.relationships.category", $article);
 
-        $this->withoutJsonApiDocumentFormatting();
+        //$this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
             "data" => [

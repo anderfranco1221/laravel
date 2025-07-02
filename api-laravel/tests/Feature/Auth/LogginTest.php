@@ -9,14 +9,18 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
-class AccessTokenTest extends TestCase
+class LogginTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void{
+        parent::setUp();
+        $this->withoutJsonApiHelpers();
+    }
 
     /** @test */
     public function can_issue_tokens()
     {
-        $this->withoutJsonApiDocumentFormatting();
         $user = User::factory()->create();
 
         $data = $this->validCredentials([
@@ -31,10 +35,23 @@ class AccessTokenTest extends TestCase
         $this->assertTrue($dbToken->tokenable->is($user));
     }
 
+     /** @test */
+    public function only_one_access_token_can_be_issued_at_a_time()
+    {
+        $user = User::factory()->create();
+
+        $accessToken = $user->createToken($user->name)->plainTextToken;
+
+        $this->withHeader("Authorization", "Bearer {$accessToken}")
+            ->postJson(route("api.v1.login"))
+            ->assertNoContent();
+
+        $this->assertCount(1, $user->tokens);
+    }
+
     /** @test */
     public function user_permissions_are_assigned_as_abilities_to_the_token()
     {
-        $this->withoutJsonApiDocumentFormatting();
         $user = User::factory()->create();
 
         $permission1 = Permission::factory()->create();
@@ -61,7 +78,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function password_must_be_valid()
     {
-        $this->withoutJsonApiDocumentFormatting();
         $user = User::factory()->create();
 
         $data = $this->validCredentials([
@@ -77,7 +93,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function user_must_be_registered()
     {
-        $this->withoutJsonApiDocumentFormatting();
 
         $data = $this->validCredentials();
 
@@ -89,7 +104,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function email_is_required()
     {
-        $this->withoutJsonApiDocumentFormatting();
 
         $data = $this->validCredentials(["email" => null]);
 
@@ -101,7 +115,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function email_must_be_valid()
     {
-        $this->withoutJsonApiDocumentFormatting();
 
         $data = $this->validCredentials(["email" => "email-invalid"]);
 
@@ -113,7 +126,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function password_is_required()
     {
-        $this->withoutJsonApiDocumentFormatting();
 
         $data = $this->validCredentials(["password" => null]);
 
@@ -125,7 +137,6 @@ class AccessTokenTest extends TestCase
     /** @test */
     public function device_name_is_required()
     {
-        $this->withoutJsonApiDocumentFormatting();
 
         $data = $this->validCredentials(["device_name" => null]);
 

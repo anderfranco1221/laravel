@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Http\Requests\SaveArticleRequest;
 use App\Http\Resources\ArticleCollection;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -43,16 +44,35 @@ class ArticleController extends Controller
 
     public function store(SaveArticleRequest $request): ArticleResource{
         $this->authorize("create", new Article);
+        
+        $articleData = $request->getAttributes();
+        $articleData["user_id"] = $request->getRelationshipId("author");
 
-        $article = Article::create($request->validated());
+        $categorySlug = $request->getRelationshipId("category");
+        $category = Category::where("slug", $categorySlug)->first();
+        $articleData["category_id"] = $category->id;
+
+        $article = Article::create($articleData);
         return ArticleResource::make($article);
     }
 
     public function update(Article $article, SaveArticleRequest $request): ArticleResource
     {
         $this->authorize("update", $article);
+        //Validacion del objeto
+        $articleData = $request ->getAttributes();
 
-        $article->update($request->validated());
+        if($request->hasRelationship("author")){
+            $articleData["user_id"] = $request->getRelationshipId("author");
+        }
+
+        if($request->hasRelationship("category")){
+            $categorySlug = $request->getRelationshipId("category");
+            $category = Category::where("slug", $categorySlug)->first();
+            $articleData["category_id"] = $category->id;
+        }
+
+        $article->update($articleData);
 
         return ArticleResource::make($article);
     }

@@ -42,33 +42,4 @@ class SaveArticleRequest extends FormRequest
         ];
     }
 
-    public function validated($key = 'data.attributes', $default = null)
-    {
-        $data = parent::validated()['data'];
-        $attributes = $data['attributes'] ;
-
-        //Valida la relacion enviada por las peticiones post y put
-        if(isset($data['relationships'])){
-            $relationships = $data['relationships'];
-
-            foreach($relationships as $key => $relationshp){
-                $attributes = array_merge($attributes, $this->{$key}($relationshp));
-            }
-        }
-
-        return $attributes;
-    }
-
-    public function author($relationship): array
-    {
-        $userUuid = $relationship["data"]["id"];
-        return ['user_id' => $userUuid];
-    }
-
-    public function category($relationship): array
-    {
-        $categorySlug = $relationship['data']['id'];
-        $category = Category::where('slug', $categorySlug)->first();
-        return ['category_id' =>  $category->id];
-    }
 }

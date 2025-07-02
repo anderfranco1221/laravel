@@ -6,7 +6,6 @@ use Illuminate\Validation\ValidationException;
 
 class JsonApiValidationErrorResponse extends JsonResponse
 {
-    
     public function __construct(ValidationException $exception, $status = 422) {
         $title = $exception->getMessage();
 

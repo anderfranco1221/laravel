@@ -51,7 +51,7 @@ class AuthorRelationshipTest extends TestCase
 
         $url = route("api.v1.articles.relationships.author", $article);
 
-        $this->withoutJsonApiDocumentFormatting();
+        //$this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
             "data" => [
@@ -80,9 +80,9 @@ class AuthorRelationshipTest extends TestCase
 
         $url = route("api.v1.articles.relationships.author", $article);
 
-        $this->withoutJsonApiDocumentFormatting();
+        //$this->withoutJsonApiDocumentFormatting();
 
-        $response = $this->patchJson($url, [
+        $this->patchJson($url, [
             "data" => [
                 "type" => "author",
                 "id" => "no-existing"
