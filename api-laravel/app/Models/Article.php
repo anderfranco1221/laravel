@@ -10,7 +10,7 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $table = "articles";
+    protected $table = 'articles';
 
     protected $guarded = [];
 
@@ -51,30 +51,34 @@ class Article extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, "user_id");
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function scopeYear(Builder $query, $year){
+    public function scopeYear(Builder $query, $year)
+    {
         $query->whereYear('created_at', $year);
     }
 
-    public function scopeMonth(Builder $query, $month){
+    public function scopeMonth(Builder $query, $month)
+    {
         $query->whereMonth('created_at', $month);
     }
 
-    public function scopeTitle(Builder $query, $value){
-        $query->where('title', 'LIKE',  '%' . $value . '%');
+    public function scopeTitle(Builder $query, $value)
+    {
+        $query->where('title', 'LIKE', '%'.$value.'%');
     }
 
-    public function scopeContent(Builder $query, $value){
-        $query->where('content', 'LIKE',  '%' . $value . '%');
+    public function scopeContent(Builder $query, $value)
+    {
+        $query->where('content', 'LIKE', '%'.$value.'%');
     }
 
     public function scopeCategories(Builder $query, $categories)
     {
         $categoriesSlugs = explode(',', $categories);
 
-        $query->whereHas('category', function($q) use($categoriesSlugs){
+        $query->whereHas('category', function ($q) use ($categoriesSlugs) {
             $q->whereIn('slug', $categoriesSlugs);
         });
     }

@@ -7,38 +7,36 @@ use App\Models\User;
 use App\Models\Article;
 use App\Models\Category;
 use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UpdateArticleTest extends TestCase
 {
     use RefreshDatabase;
 
-
-     /** @test */
+    /** @test */
     public function gessts_cannot_update_articles()
     {
         $article = Article::factory()->create();
 
         $this->patchJson(route('api.v1.articles.update', $article))
             ->assertJsonApiError(
-                title: "Unauthenticated",
-                detail: "This action requires authentication.",
-                status: "401"
+                title: 'Unauthenticated',
+                detail: 'This action requires authentication.',
+                status: '401'
             );
     }
 
-     /** @test */
+    /** @test */
     public function can_update_owned_articles()
     {
         $article = Article::factory()->create();
 
-        Sanctum::actingAs($article->author, ["article:update"]);
+        Sanctum::actingAs($article->author, ['article:update']);
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'Update articulo',
             'slug' => $article->slug,
-            'content' => 'Actualizar contenido del articulo'
+            'content' => 'Actualizar contenido del articulo',
         ])->assertOk();
 
         $article = Article::first();
@@ -46,7 +44,7 @@ class UpdateArticleTest extends TestCase
         $response->assertJsonApiResource($article, [
             'title' => 'Update articulo',
             'slug' => $article->slug,
-            'content' => 'Actualizar contenido del articulo'
+            'content' => 'Actualizar contenido del articulo',
         ]);
     }
 
@@ -56,13 +54,13 @@ class UpdateArticleTest extends TestCase
         $article = Article::factory()->create();
         $category = Category::factory()->create();
 
-        Sanctum::actingAs($article->author, ["article:update"]);
+        Sanctum::actingAs($article->author, ['article:update']);
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'Update articulo',
             'slug' => $article->slug,
             'content' => 'Actualizar contenido del articulo',
-            "_relationships" => [ "category" => $category ]
+            '_relationships' => ['category' => $category],
         ])->assertOk();
 
         $article = Article::first();
@@ -70,12 +68,12 @@ class UpdateArticleTest extends TestCase
         $response->assertJsonApiResource($article, [
             'title' => 'Update articulo',
             'slug' => $article->slug,
-            'content' => 'Actualizar contenido del articulo'
+            'content' => 'Actualizar contenido del articulo',
         ]);
 
-        $this->assertDatabaseHas("articles", [
+        $this->assertDatabaseHas('articles', [
             'title' => 'Update articulo',
-            "category_id" => $category->id
+            'category_id' => $category->id,
         ]);
     }
 
@@ -89,7 +87,7 @@ class UpdateArticleTest extends TestCase
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'Update articulo',
             'slug' => $article->slug,
-            'content' => 'Actualizar contenido del articulo'
+            'content' => 'Actualizar contenido del articulo',
         ])->assertForbidden();
     }
 
@@ -100,8 +98,8 @@ class UpdateArticleTest extends TestCase
         Sanctum::actingAs($article->author);
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
-                    'slug' => 'update-articulo',
-                    'content' => 'Actualizar Contenido del articulo'
+            'slug' => 'update-articulo',
+            'content' => 'Actualizar Contenido del articulo',
         ]);
 
         $response->assertJsonApiValidationErrors('title');
@@ -116,8 +114,8 @@ class UpdateArticleTest extends TestCase
         Sanctum::actingAs($article->author);
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
-                    'title' => 'Update articulo',
-                    'content' => 'Actualizar Contenido del articulo'
+            'title' => 'Update articulo',
+            'content' => 'Actualizar Contenido del articulo',
         ]);
 
         $response->assertJsonApiValidationErrors('slug');
@@ -134,9 +132,9 @@ class UpdateArticleTest extends TestCase
         $article2 = Article::factory()->create();
 
         $response = $this->patchJson(route('api.v1.articles.update', $article1), [
-                    'title' => 'Nuevo articulo',
-                    'slug' => $article2->slug,
-                    'content' => 'Contenido del articulo'
+            'title' => 'Nuevo articulo',
+            'slug' => $article2->slug,
+            'content' => 'Contenido del articulo',
         ]);
 
         $response->assertJsonApiValidationErrors('slug');
@@ -149,10 +147,10 @@ class UpdateArticleTest extends TestCase
         $article = Article::factory()->create();
         Sanctum::actingAs($article->author);
 
-        $response = $this->patchJson(route('api.v1.articles.update', $article),[
+        $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'Update articulo',
             'slug' => 'update-articulo',
-                ]);
+        ]);
 
         $response->assertJsonApiValidationErrors('content');
 

@@ -4,7 +4,6 @@ namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
 use App\Models\Article;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SortArticlesTest extends TestCase
@@ -27,7 +26,7 @@ class SortArticlesTest extends TestCase
         ]);
     }
 
-     /** @test */
+    /** @test */
     public function can_sort_articles_by_title_descending()
     {
         Article::factory()->create(['title' => 'C title']);
@@ -80,18 +79,18 @@ class SortArticlesTest extends TestCase
     {
         Article::factory()->create([
             'title' => 'A title',
-            'content' => 'A content'
-            ]);
+            'content' => 'A content',
+        ]);
 
         Article::factory()->create([
-                'title' => 'B title',
-                'content' => 'B content'
-            ]);
+            'title' => 'B title',
+            'content' => 'B content',
+        ]);
 
         Article::factory()->create([
-                    'title' => 'A title',
-                    'content' => 'C content'
-            ]);
+            'title' => 'A title',
+            'content' => 'C content',
+        ]);
 
         $url = route('api.v1.articles.index', ['sort' => 'title,-content']);
 
@@ -110,9 +109,9 @@ class SortArticlesTest extends TestCase
         $url = route('api.v1.articles.index', ['sort' => 'unknown']);
 
         $this->getJson($url)->assertJsonApiError(
-            title: "Bad Request",
+            title: 'Bad Request',
             detail: "The sort field 'unknown' is not in the 'articles' resource.",
-            status: "400"
-        ); //assertStatus(400);
+            status: '400'
+        ); // assertStatus(400);
     }
 }

@@ -3,9 +3,8 @@
 namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
-use App\Models\Article;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthorRelationshipTest extends TestCase
@@ -16,30 +15,30 @@ class AuthorRelationshipTest extends TestCase
     public function can_fetch_the_associated_author_identifier()
     {
         $article = Article::factory()->create();
-        $response = $this->getJson(route("api.v1.articles.relationships.author", $article));
+        $response = $this->getJson(route('api.v1.articles.relationships.author', $article));
         $response->assertExactJson([
-            "data" => [
-                    "id" => $article->author->getRouteKey(),
-                    "type" => "author"
-                ]
-            ]);
+            'data' => [
+                'id' => $article->author->getRouteKey(),
+                'type' => 'author',
+            ],
+        ]);
     }
 
     /** @test */
     public function can_fetch_the_associated_author_resource()
     {
         $article = Article::factory()->create();
-        $url = route("api.v1.articles.author", $article);
-        $response  =  $this->getJson($url);
+        $url = route('api.v1.articles.author', $article);
+        $response = $this->getJson($url);
 
         $response->assertJson([
-            "data" => [
-                "id" => $article->author->getRouteKey(),
-                "type" => "author",
-                "attributes"=> [
-                    "name" => $article->author->name,
-                ]
-            ]
+            'data' => [
+                'id' => $article->author->getRouteKey(),
+                'type' => 'author',
+                'attributes' => [
+                    'name' => $article->author->name,
+                ],
+            ],
         ]);
     }
 
@@ -49,27 +48,27 @@ class AuthorRelationshipTest extends TestCase
         $article = Article::factory()->create();
         $author = User::factory()->create();
 
-        $url = route("api.v1.articles.relationships.author", $article);
+        $url = route('api.v1.articles.relationships.author', $article);
 
-        //$this->withoutJsonApiDocumentFormatting();
+        // $this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
-            "data" => [
-                "type" => "author",
-                "id" => $author->getRouteKey()
-            ]
+            'data' => [
+                'type' => 'author',
+                'id' => $author->getRouteKey(),
+            ],
         ]);
 
         $response->assertExactJson([
-            "data" => [
-                "type" => "author",
-                "id" => $author->getRouteKey()
-            ]
-            ]);
+            'data' => [
+                'type' => 'author',
+                'id' => $author->getRouteKey(),
+            ],
+        ]);
 
-        $this->assertDatabaseHas("articles", [
-            "title" => $article->title,
-            "user_id" => $author->id
+        $this->assertDatabaseHas('articles', [
+            'title' => $article->title,
+            'user_id' => $author->id,
         ]);
     }
 
@@ -78,21 +77,20 @@ class AuthorRelationshipTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        $url = route("api.v1.articles.relationships.author", $article);
+        $url = route('api.v1.articles.relationships.author', $article);
 
-        //$this->withoutJsonApiDocumentFormatting();
+        // $this->withoutJsonApiDocumentFormatting();
 
         $this->patchJson($url, [
-            "data" => [
-                "type" => "author",
-                "id" => "no-existing"
-            ]
-        ])->assertJsonApiValidationErrors("data.id");
+            'data' => [
+                'type' => 'author',
+                'id' => 'no-existing',
+            ],
+        ])->assertJsonApiValidationErrors('data.id');
 
-
-        $this->assertDatabaseHas("articles", [
-            "title" => $article->title,
-            "user_id" => $article->user_id
+        $this->assertDatabaseHas('articles', [
+            'title' => $article->title,
+            'user_id' => $article->user_id,
         ]);
     }
 }

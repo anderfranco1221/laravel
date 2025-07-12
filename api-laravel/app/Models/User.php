@@ -4,7 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\Permission;
 use App\Models\Traits\HasUuid;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuid;
+    use HasApiTokens, HasFactory, HasUuid, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -45,9 +44,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public $resourceType = "author";
+    public $resourceType = 'author';
 
-    public function permissions(){
+    public function permissions()
+    {
         return $this->belongsToMany(Permission::class);
     }
 

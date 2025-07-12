@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Categories;
 
+use Tests\TestCase;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 
 class ListCategoriesTest extends TestCase
 {
@@ -14,12 +13,12 @@ class ListCategoriesTest extends TestCase
     /** @test */
     public function can_fetch_a_single_category()
     {
-        $category  = Category::factory()->create();
+        $category = Category::factory()->create();
 
         $response = $this->getJson(route('api.v1.categories.show', $category));
 
         $response->assertJsonApiResource($category, [
-            'name' => $category->name
+            'name' => $category->name,
         ]);
     }
 
@@ -30,8 +29,8 @@ class ListCategoriesTest extends TestCase
 
         $response = $this->getJson(route('api.v1.categories.index'));
 
-        $response->assertJsonApiResourceCollection($categories, 
-                ['name']
+        $response->assertJsonApiResourceCollection($categories,
+            ['name']
         );
     }
 }

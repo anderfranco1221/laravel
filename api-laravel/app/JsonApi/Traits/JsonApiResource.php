@@ -3,12 +3,11 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 trait JsonApiResource
 {
-
     abstract public function toJsonApi(): array;
 
     /**
@@ -19,11 +18,12 @@ trait JsonApiResource
      */
     public function toArray($request)
     {
-        //* Agrega las relaciones del objeto
-        if($request->filled('include')){
-            foreach($this->getIncludes() as $include){
-                if($include->resource instanceof MissingValue)
+        // * Agrega las relaciones del objeto
+        if ($request->filled('include')) {
+            foreach ($this->getIncludes() as $include) {
+                if ($include->resource instanceof MissingValue) {
                     continue;
+                }
 
                 $this->with['included'][] = $include;
             }
@@ -31,16 +31,16 @@ trait JsonApiResource
             $this->with['included'] = $this->getIncludes();
         }
 
-        //Estructura de la respuesta segun el objeto
+        // Estructura de la respuesta segun el objeto
 
-        //* Parte entendible y ajustable
+        // * Parte entendible y ajustable
         return Document::type($this->resource->getResourceType())
-                ->id($this->resource->getRouteKey())
-                ->attributes($this->filterAttributes($this->toJsonApi()))
-                ->relationshipsLinks($this->getRelationshipLinks())
-                ->links([
-                    'self' => route('api.v1.' . $this->resource->getResourceType() . '.show', $this->resource)
-                ])->get('data');
+            ->id($this->resource->getRouteKey())
+            ->attributes($this->filterAttributes($this->toJsonApi()))
+            ->relationshipsLinks($this->getRelationshipLinks())
+            ->links([
+                'self' => route('api.v1.'.$this->resource->getResourceType().'.show', $this->resource),
+            ])->get('data');
 
         /*  //Parte inicial
         return [
@@ -70,12 +70,12 @@ trait JsonApiResource
     public function withResponse($request, $response)
     {
 
-        //Forma 1
+        // Forma 1
         $response->header(
             'Location',
-            route('api.v1.' . $this->getResourceType() . '.show', $this->resource)
+            route('api.v1.'.$this->getResourceType().'.show', $this->resource)
         );
-        //Forma 2
+        // Forma 2
         /* return parent::toResponse($request)->withHeaders([
             'Location' => route('api.v1.'.$this->getResourceType().'.show', $this->resource)
         ]); */
@@ -87,20 +87,20 @@ trait JsonApiResource
     public function filterAttributes(array $attributes): array
     {
 
-        //dd($attributes);
-        return array_filter($attributes,  function($value)
-            {
-                if(request()->isNotFilled('fields'))
-                    return true;
-
-                $fields = explode(',', request('fields.'.$this->getResourceType()));
-
-                if($value === $this->getRoutekey())
-                    return in_array($this->getRoutekeyName(), $fields);
-
-
-                return $value;
+        // dd($attributes);
+        return array_filter($attributes, function ($value) {
+            if (request()->isNotFilled('fields')) {
+                return true;
             }
+
+            $fields = explode(',', request('fields.'.$this->getResourceType()));
+
+            if ($value === $this->getRoutekey()) {
+                return in_array($this->getRoutekeyName(), $fields);
+            }
+
+            return $value;
+        }
         );
     }
 
@@ -111,13 +111,13 @@ trait JsonApiResource
     {
         $collection = parent::collection($resources);
 
-        //* Insercion de las relaciones
-        if(request()->filled('include'))
-        {
+        // * Insercion de las relaciones
+        if (request()->filled('include')) {
             foreach ($resources as $resource) {
-                foreach($resource->getIncludes() as $include){
-                    if($include->resource instanceof MissingValue)
+                foreach ($resource->getIncludes() as $include) {
+                    if ($include->resource instanceof MissingValue) {
                         continue;
+                    }
 
                     $collection->with['included'][] = $include;
                 }
@@ -136,5 +136,3 @@ trait JsonApiResource
             ->toArray();
     }
 }
-
-?>

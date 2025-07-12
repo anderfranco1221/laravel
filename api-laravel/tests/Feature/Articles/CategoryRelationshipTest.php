@@ -5,7 +5,6 @@ namespace Tests\Feature\Articles;
 use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryRelationshipTest extends TestCase
@@ -16,31 +15,31 @@ class CategoryRelationshipTest extends TestCase
     public function can_fetch_the_associated_category_identifier()
     {
         $article = Article::factory()->create();
-        $response = $this->getJson(route("api.v1.articles.relationships.category", $article));
+        $response = $this->getJson(route('api.v1.articles.relationships.category', $article));
 
         $response->assertExactJson([
-            "data" => [
-                    "id" => $article->category->getRouteKey(),
-                    "type" => "categories"
-                ]
-            ]);
+            'data' => [
+                'id' => $article->category->getRouteKey(),
+                'type' => 'categories',
+            ],
+        ]);
     }
 
     /** @test */
     public function can_fetch_the_associated_category_resource()
     {
         $article = Article::factory()->create();
-        $url = route("api.v1.articles.category", $article);
-        $response  =  $this->getJson($url);
+        $url = route('api.v1.articles.category', $article);
+        $response = $this->getJson($url);
 
         $response->assertJson([
-            "data" => [
-                "id" => $article->category->getRouteKey(),
-                "type" => "categories",
-                "attributes"=> [
-                    "name" => $article->category->name,
-                ]
-            ]
+            'data' => [
+                'id' => $article->category->getRouteKey(),
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => $article->category->name,
+                ],
+            ],
         ]);
     }
 
@@ -50,27 +49,27 @@ class CategoryRelationshipTest extends TestCase
         $article = Article::factory()->create();
         $category = Category::factory()->create();
 
-        $url = route("api.v1.articles.relationships.category", $article);
+        $url = route('api.v1.articles.relationships.category', $article);
 
-        //$this->withoutJsonApiDocumentFormatting();
+        // $this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
-            "data" => [
-                "type" => "categories",
-                "id" => $category->getRouteKey()
-            ]
+            'data' => [
+                'type' => 'categories',
+                'id' => $category->getRouteKey(),
+            ],
         ]);
 
         $response->assertExactJson([
-            "data" => [
-                "type" => "categories",
-                "id" => $category->getRouteKey()
-            ]
-            ]);
+            'data' => [
+                'type' => 'categories',
+                'id' => $category->getRouteKey(),
+            ],
+        ]);
 
-        $this->assertDatabaseHas("articles", [
-            "title" => $article->title,
-            "category_id" => $category->id
+        $this->assertDatabaseHas('articles', [
+            'title' => $article->title,
+            'category_id' => $category->id,
         ]);
 
     }
@@ -80,21 +79,20 @@ class CategoryRelationshipTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        $url = route("api.v1.articles.relationships.category", $article);
+        $url = route('api.v1.articles.relationships.category', $article);
 
-        //$this->withoutJsonApiDocumentFormatting();
+        // $this->withoutJsonApiDocumentFormatting();
 
         $response = $this->patchJson($url, [
-            "data" => [
-                "type" => "categories",
-                "id" => "no-existing"
-            ]
-        ])->assertJsonApiValidationErrors("data.id");
+            'data' => [
+                'type' => 'categories',
+                'id' => 'no-existing',
+            ],
+        ])->assertJsonApiValidationErrors('data.id');
 
-
-        $this->assertDatabaseHas("articles", [
-            "title" => $article->title,
-            "category_id" => $article->category_id
+        $this->assertDatabaseHas('articles', [
+            'title' => $article->title,
+            'category_id' => $article->category_id,
         ]);
     }
 }

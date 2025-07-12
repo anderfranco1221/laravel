@@ -2,9 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\AuthorResources;
 use App\JsonApi\Traits\JsonApiResource;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,12 +10,12 @@ class ArticleResource extends JsonResource
 {
     use JsonApiResource;
 
-    public function toJsonApi():array
+    public function toJsonApi(): array
     {
         return [
             'title' => $this->resource->title,
             'slug' => $this->resource->slug,
-            'content' => $this->resource->content
+            'content' => $this->resource->content,
         ];
     }
 
@@ -29,13 +27,12 @@ class ArticleResource extends JsonResource
     public function getIncludes(): array
     {
         return array_values(array_filter([
-            CategoryResource::make($this->whenLoaded("category")),
-            AuthorResources::make($this->whenLoaded("author")),
-        ], function($item){
+            CategoryResource::make($this->whenLoaded('category')),
+            AuthorResources::make($this->whenLoaded('author')),
+        ], function ($item) {
             $test = (array) $item;
 
-            return !$test["resource"] instanceof MissingValue;
+            return ! $test['resource'] instanceof MissingValue;
         }));
     }
-
 }

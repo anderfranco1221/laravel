@@ -2,11 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
+use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LogoutTest extends TestCase
 {
@@ -19,8 +18,8 @@ class LogoutTest extends TestCase
 
         $accessToken = $user->createToken($user->name)->plainTextToken;
 
-        $this->withHeader("Authorization", "Bearer {$accessToken}")
-            ->postJson(route("api.v1.logout"))
+        $this->withHeader('Authorization', "Bearer {$accessToken}")
+            ->postJson(route('api.v1.logout'))
             ->assertNoContent();
 
         $this->assertNull(PersonalAccessToken::findToken($accessToken));

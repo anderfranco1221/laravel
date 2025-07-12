@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class Slug implements Rule
 {
     protected $message;
+
     /**
      * Create a new rule instance.
      *
@@ -26,21 +27,21 @@ class Slug implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($this->hasUnderscores($value)) 
-        {
+        if ($this->hasUnderscores($value)) {
             $this->message = trans('validation.no_underscores');
+
             return false;
         }
 
-        if ($this->startWithDashes($value)) 
-        {
+        if ($this->startWithDashes($value)) {
             $this->message = trans('validation.no_starting_dashes');
+
             return false;
         }
 
-        if ($this->endsWithDashes($value)) 
-        {
+        if ($this->endsWithDashes($value)) {
             $this->message = trans('validation.no_ending_dashes');
+
             return false;
         }
 
@@ -57,15 +58,18 @@ class Slug implements Rule
         return $this->message;
     }
 
-    protected function hasUnderscores($value){
+    protected function hasUnderscores($value)
+    {
         return preg_match('/_/', $value);
     }
 
-    protected function startWithDashes($value){
+    protected function startWithDashes($value)
+    {
         return preg_match('/^-/', $value);
     }
 
-    protected function endsWithDashes($value){
+    protected function endsWithDashes($value)
+    {
         return preg_match('/-$/', $value);
     }
 }

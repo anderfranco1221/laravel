@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Models\Permission;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 class UserPermissionTest extends TestCase

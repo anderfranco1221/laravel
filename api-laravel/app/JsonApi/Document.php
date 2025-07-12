@@ -1,4 +1,5 @@
 <?php
+
 namespace App\JsonApi;
 
 use Illuminate\Support\Collection;
@@ -8,7 +9,6 @@ use Illuminate\Support\Collection;
  */
 class Document extends Collection
 {
-
     /**
      * Tipo del objeto que se esta devolviendo
      */
@@ -16,8 +16,8 @@ class Document extends Collection
     {
         return new self([
             'data' => [
-                'type' => $type
-            ]
+                'type' => $type,
+            ],
         ]);
     }
 
@@ -26,8 +26,9 @@ class Document extends Collection
      */
     public function id($id): Document
     {
-        if($id)
-            $this->items['data']['id'] = (string)  $id;
+        if ($id) {
+            $this->items['data']['id'] = (string) $id;
+        }
 
         return $this;
     }
@@ -56,25 +57,25 @@ class Document extends Collection
 
     public function relationshipsData(array $relationships): Document
     {
-        foreach($relationships as $key => $relationship){
+        foreach ($relationships as $key => $relationship) {
             $this->items['data']['relationships'][$key]['data'] = [
                 'type' => $relationship->getResourceType(),
-                'id' => $relationship->getRouteKey()
+                'id' => $relationship->getRouteKey(),
             ];
         }
+
         return $this;
     }
 
     public function relationshipsLinks(array $relationships): Document
     {
-        foreach($relationships as $key){
+        foreach ($relationships as $key) {
             $this->items['data']['relationships'][$key]['links'] = [
                 'self' => route("api.v1.{$this->items['data']['type']}.relationships.{$key}", $this->items['data']['id']),
-                'related' => route("api.v1.{$this->items['data']['type']}.{$key}", $this->items['data']['id'])
+                'related' => route("api.v1.{$this->items['data']['type']}.{$key}", $this->items['data']['id']),
             ];
         }
+
         return $this;
     }
 }
-
-?>

@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Articles;
 
-use DB;
 use Tests\TestCase;
 use App\Models\Article;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IncludeCategoryTest extends TestCase
@@ -19,7 +17,7 @@ class IncludeCategoryTest extends TestCase
 
         $url = route('api.v1.articles.show', [
             'article' => $article,
-            'include' => 'category'
+            'include' => 'category',
         ]);
 
         $this->getJson($url)->assertJson([
@@ -29,10 +27,10 @@ class IncludeCategoryTest extends TestCase
                     'type' => 'categories',
                     'id' => $article->category->getRouteKey(),
                     'attributes' => [
-                        'name' => $article->category->name
-                    ]
-                ]
-            ]
+                        'name' => $article->category->name,
+                    ],
+                ],
+            ],
         ]);
 
     }
@@ -44,7 +42,7 @@ class IncludeCategoryTest extends TestCase
         $article2 = Article::factory()->create()->load('category');
 
         $url = route('api.v1.articles.index', [
-            'include' => 'category'
+            'include' => 'category',
         ]);
 
         /* \DB::listen(function($query){
@@ -58,18 +56,18 @@ class IncludeCategoryTest extends TestCase
                     'type' => 'categories',
                     'id' => $article->category->getRouteKey(),
                     'attributes' => [
-                        'name' => $article->category->name
+                        'name' => $article->category->name,
                     ],
                 ],
                 [
                     'type' => 'categories',
                     'id' => $article2->category->getRouteKey(),
                     'attributes' => [
-                        'name' => $article2->category->name
-                    ]
+                        'name' => $article2->category->name,
+                    ],
 
-                ]
-            ]
+                ],
+            ],
         ]);
 
     }
@@ -81,7 +79,7 @@ class IncludeCategoryTest extends TestCase
 
         $url = route('api.v1.articles.show', [
             'article' => $article,
-            'include' => 'unknown, unknown2'
+            'include' => 'unknown, unknown2',
         ]);
 
         $this->getJson($url)->assertStatus(400);
@@ -89,13 +87,13 @@ class IncludeCategoryTest extends TestCase
         $article = Article::factory()->create();
 
         $url = route('api.v1.articles.index', [
-            'include' => 'unknown'
+            'include' => 'unknown',
         ]);
 
         $this->getJson($url)->assertJsonApiError(
-            title: "Bad Request",
+            title: 'Bad Request',
             detail: "The include relationship 'unknown' is not in the 'articles' resource.",
-            status: "400"
+            status: '400'
         );
 
     }

@@ -4,8 +4,6 @@ namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
 use App\Models\Article;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IncludeAuthorTest extends TestCase
@@ -19,7 +17,7 @@ class IncludeAuthorTest extends TestCase
 
         $url = route('api.v1.articles.show', [
             'article' => $article,
-            'include' => 'author'
+            'include' => 'author',
         ]);
 
         $this->getJson($url)->assertJson([
@@ -29,10 +27,10 @@ class IncludeAuthorTest extends TestCase
                     'type' => 'author',
                     'id' => $article->author->getRouteKey(),
                     'attributes' => [
-                        'name' => $article->author->name
-                    ]
-                ]
-            ]
+                        'name' => $article->author->name,
+                    ],
+                ],
+            ],
         ]);
 
     }
@@ -44,7 +42,7 @@ class IncludeAuthorTest extends TestCase
         $article2 = Article::factory()->create()->load('author');
 
         $url = route('api.v1.articles.index', [
-            'include' => 'author'
+            'include' => 'author',
         ]);
 
         /* \DB::listen(function($query){
@@ -58,18 +56,18 @@ class IncludeAuthorTest extends TestCase
                     'type' => 'author',
                     'id' => $article->author->getRouteKey(),
                     'attributes' => [
-                        'name' => $article->author->name
+                        'name' => $article->author->name,
                     ],
                 ],
                 [
                     'type' => 'author',
                     'id' => $article2->author->getRouteKey(),
                     'attributes' => [
-                        'name' => $article2->author->name
-                    ]
+                        'name' => $article2->author->name,
+                    ],
 
-                ]
-            ]
+                ],
+            ],
         ]);
 
     }

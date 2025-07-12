@@ -29,10 +29,10 @@ class JsonApiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Builder::mixin(new JsonApiQueryBuilder());
+        Builder::mixin(new JsonApiQueryBuilder);
 
-        TestResponse::mixin(new JsonApiTestResponse());
+        TestResponse::mixin(new JsonApiTestResponse);
 
-        Request::mixin(new JsonApiRequest());
+        Request::mixin(new JsonApiRequest);
     }
 }

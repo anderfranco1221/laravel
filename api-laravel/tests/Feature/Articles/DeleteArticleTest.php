@@ -3,16 +3,14 @@
 namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
-use App\Models\Article;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Article;
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteArticleTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function gessts_cannot_delete_articles()
@@ -21,9 +19,9 @@ class DeleteArticleTest extends TestCase
 
         $this->deleteJson(route('api.v1.articles.destroy', $article))
             ->assertJsonApiError(
-                title: "Unauthenticated",
-                detail: "This action requires authentication.",
-                status: "401"
+                title: 'Unauthenticated',
+                detail: 'This action requires authentication.',
+                status: '401'
             );
 
     }
@@ -33,7 +31,7 @@ class DeleteArticleTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        Sanctum::actingAs($article->author, ["article:delete"]);
+        Sanctum::actingAs($article->author, ['article:delete']);
 
         $this->deleteJson(route('api.v1.articles.destroy', $article))
             ->assertNoContent();

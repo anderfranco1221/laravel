@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Responses;
 
 use App\Models\User;
@@ -8,7 +9,8 @@ class TokenResponses implements Responsable
 {
     private $user;
 
-    public function __construct(User $user) {
+    public function __construct(User $user)
+    {
         $this->user = $user;
     }
 
@@ -16,11 +18,11 @@ class TokenResponses implements Responsable
     {
         $plainTextToken = $this->user->createToken(
             $request->device_name,
-            $this->user->permissions->pluck("name")->toArray()
-            )->plainTextToken;
+            $this->user->permissions->pluck('name')->toArray()
+        )->plainTextToken;
 
         return response()->json([
-            "plain-text-token" => $plainTextToken
+            'plain-text-token' => $plainTextToken,
         ]);
     }
 }
