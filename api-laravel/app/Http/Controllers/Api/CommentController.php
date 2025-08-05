@@ -14,7 +14,7 @@ class CommentController extends Controller
 
     public function __construct() {
         $this->middleware("auth:sanctum", [
-            "only" => ["store"]
+            "only" => ["store", "update"]
         ]);
     }
 
@@ -56,9 +56,23 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(SaveCommentsRequest $request, Comment $comment): CommentResource
     {
-        //
+        $this->authorize("update", $comment);
+        $comment->body = $request->input("data.attributes.body");
+
+        if($request->hasRelationships("article")){
+            $articleSlug = $request->getRelationshipId("article");
+            $comment->article_id = Article::where("id", $articleSlug)->firstOrFail()->id;
+        }
+
+        if($request->hasRelationships("author")){
+            $comment->user_id = $request->getRelationshipId("author");
+        }
+
+        $comment->save();
+
+        return CommentResource::make($comment);
     }
 
     /**
