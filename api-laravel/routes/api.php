@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
+use App\Http\Controllers\Api\CommentController;
 
 /*
 Route::bind('article', function($article){
@@ -22,6 +23,8 @@ Route::bind('article', function($article){
 // Route::name('api.v1.', function(){
 
 Route::apiResource('articles', ArticleController::class);
+Route::apiResource('comments', CommentController::class);
+
 //    ->names('api.v1.articles');
 
 Route::apiResource('categories', CategoryController::class)
