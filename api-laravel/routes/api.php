@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
+use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 
 /*
@@ -30,16 +31,30 @@ Route::apiResource('categories', CategoryController::class)
 Route::apiResource('author', AuthorController::class)
     ->only('index', 'show');
 
-Route::controller(CommentArticleController::class)
-    ->prefix('comments/{comment}')
-    ->group(function () {
-        Route::get('/relationships/article', 'index')
-            ->name('comments.relationships.article');
-        Route::get('/article', 'show')
-            ->name('comments.article');
-        Route::patch('/relationships/article', 'update');
-            /* ->name('comments.relationships.article') */
+Route::prefix('comments/{comment}')
+    ->group(function (){
+
+    Route::controller(CommentArticleController::class)
+        ->group(function () {
+            Route::get('relationships/article', 'index')
+                ->name('comments.relationships.article');
+            Route::get('article', 'show')
+                ->name('comments.article');
+            Route::patch('relationships/article', 'update');
+                /* ->name('comments.relationships.article') */
     });
+
+    Route::controller(CommentAuthorController::class)
+        ->group(function () {
+            Route::get('relationships/author', 'index')
+                ->name('comments.relationships.author');
+            Route::get('author', 'show')
+                ->name('comments.author');
+            Route::patch('relationships/author', 'update');
+
+        });
+});
+
 
 
 Route::prefix('articles/{article}')
