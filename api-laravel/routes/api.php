@@ -5,13 +5,14 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\Api\LogginController;
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
-use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\CommentArticleController;
 
 /*
 Route::bind('article', function($article){
@@ -25,7 +26,17 @@ Route::bind('article', function($article){
 Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments', CommentController::class);
 
-//    ->names('api.v1.articles');
+Route::get('comments/{comment}/relationships/article',
+     [CommentArticleController::class, 'index'])
+    ->name('comments.relationships.article');
+
+Route::get('comments/{comment}/article',
+[CommentArticleController::class, 'show'])
+        ->name('comments.article');
+
+Route::patch('comments/{comment}/relationships/article',
+    [CommentArticleController::class, 'update'])
+    ->name('comments.relationships.article');
 
 Route::apiResource('categories', CategoryController::class)
     ->only('index', 'show');
