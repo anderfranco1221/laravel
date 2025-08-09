@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SaveCommentsRequest;
-use App\Http\Resources\CommentResource;
 use App\Models\Article;
 use App\Models\Comment;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentResource;
+use App\Http\Requests\SaveCommentsRequest;
 
 class CommentController extends Controller
 {
-
-    public function __construct() {
-        $this->middleware("auth:sanctum", [
-            "only" => ["store", "update", "destroy"]
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum', [
+            'only' => ['store', 'update', 'destroy'],
         ]);
     }
 
     public function index()
     {
         $comments = Comment::paginate();
+
         return CommentResource::collection($comments);
     }
 
@@ -35,10 +35,10 @@ class CommentController extends Controller
         $attributes = $request->getAttributes();
         $comment = new Comment;
 
-        $comment->body = $attributes["body"];
-        $comment->user_id = $request->getRelationshipId("author");
-        $articleSlug = $request->getRelationshipId("article");
-        $comment->article_id = Article::where("id", $articleSlug)->firstOrFail()->id;
+        $comment->body = $attributes['body'];
+        $comment->user_id = $request->getRelationshipId('author');
+        $articleSlug = $request->getRelationshipId('article');
+        $comment->article_id = Article::where('id', $articleSlug)->firstOrFail()->id;
         $comment->save();
 
         return CommentResource::make($comment);
@@ -53,21 +53,20 @@ class CommentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
     public function update(SaveCommentsRequest $request, Comment $comment): CommentResource
     {
-        $this->authorize("update", $comment);
-        $comment->body = $request->input("data.attributes.body");
+        $this->authorize('update', $comment);
+        $comment->body = $request->input('data.attributes.body');
 
-        if($request->hasRelationships("article")){
-            $articleSlug = $request->getRelationshipId("article");
-            $comment->article_id = Article::where("id", $articleSlug)->firstOrFail()->id;
+        if ($request->hasRelationships('article')) {
+            $articleSlug = $request->getRelationshipId('article');
+            $comment->article_id = Article::where('id', $articleSlug)->firstOrFail()->id;
         }
 
-        if($request->hasRelationships("author")){
-            $comment->user_id = $request->getRelationshipId("author");
+        if ($request->hasRelationships('author')) {
+            $comment->user_id = $request->getRelationshipId('author');
         }
 
         $comment->save();
@@ -78,12 +77,11 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
     public function destroy(Comment $comment)
     {
-        $this->authorize("delete", $comment);
+        $this->authorize('delete', $comment);
 
         $comment->delete();
 

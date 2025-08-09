@@ -21,6 +21,13 @@ class Document extends Collection
         ]);
     }
 
+    public static function empty(): array
+    {
+        return [
+            'data' => [],
+        ];
+    }
+
     /**
      * Identificador del objeto
      */
@@ -29,6 +36,18 @@ class Document extends Collection
         if ($id) {
             $this->items['data']['id'] = (string) $id;
         }
+
+        return $this;
+    }
+
+    public function ids(Collection $resources): Document
+    {
+        $this->items['data'] = $resources->map(function ($resource) {
+            return [
+                'type' => $resource->getResourceType(),
+                'id' => (string) $resource->getRouteKey(),
+            ];
+        });
 
         return $this;
     }

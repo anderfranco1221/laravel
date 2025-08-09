@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Comments;
 
-use App\Models\Article;
 use Tests\TestCase;
+use App\Models\Article;
 use App\Models\Comment;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleRelationshipTest extends TestCase
@@ -16,14 +15,14 @@ class ArticleRelationshipTest extends TestCase
     public function can_fetch_the_associated_article_identifier()
     {
         $comment = Comment::factory()->create();
-        $url = route("api.v1.comments.relationships.article", $comment);
+        $url = route('api.v1.comments.relationships.article', $comment);
         $response = $this->getJson($url);
 
         $response->assertExactJson([
-            "data" => [
-                "id" => (string) $comment->article->getRouteKey(),
-                "type" => "articles"
-            ]
+            'data' => [
+                'id' => (string) $comment->article->getRouteKey(),
+                'type' => 'articles',
+            ],
         ]);
     }
 
@@ -31,17 +30,17 @@ class ArticleRelationshipTest extends TestCase
     public function can_fetch_the_associated_article_resource()
     {
         $comment = Comment::factory()->create();
-        $url = route("api.v1.comments.article", $comment);
+        $url = route('api.v1.comments.article', $comment);
         $response = $this->getJson($url);
 
         $response->assertJson([
-            "data" => [
-                "id" => (string) $comment->article->getRouteKey(),
-                "type" => "articles",
-                "attributes" => [
-                    "title" => $comment->article->title
-                ]
-            ]
+            'data' => [
+                'id' => (string) $comment->article->getRouteKey(),
+                'type' => 'articles',
+                'attributes' => [
+                    'title' => $comment->article->title,
+                ],
+            ],
         ]);
     }
 
@@ -51,25 +50,25 @@ class ArticleRelationshipTest extends TestCase
         $article = Article::factory()->create();
         $comment = Comment::factory()->create();
 
-        $url = route("api.v1.comments.relationships.article", $comment);
+        $url = route('api.v1.comments.relationships.article', $comment);
 
         $response = $this->patchJson($url, [
-            "data" => [
-                "id" => (string) $article->getRouteKey(),
-                "type" => "articles",
-            ]
+            'data' => [
+                'id' => (string) $article->getRouteKey(),
+                'type' => 'articles',
+            ],
         ]);
 
         $response->assertExactJson([
-            "data" => [
-                "type" => "articles",
-                "id" => (string) $article->getRouteKey(),
-            ]
+            'data' => [
+                'type' => 'articles',
+                'id' => (string) $article->getRouteKey(),
+            ],
         ]);
 
-        $this->assertDatabaseHas("comments", [
-            "body" => $comment->body,
-            "article_id" => $article->id,
+        $this->assertDatabaseHas('comments', [
+            'body' => $comment->body,
+            'article_id' => $article->id,
         ]);
     }
 
@@ -78,18 +77,18 @@ class ArticleRelationshipTest extends TestCase
     {
         $comment = Comment::factory()->create();
 
-        $url = route("api.v1.comments.relationships.article", $comment);
+        $url = route('api.v1.comments.relationships.article', $comment);
 
         $this->patchJson($url, [
-            "data" => [
-                "type" => "articles",
-                "id" => "non-existing",
-            ]
-        ])->assertJsonApiValidationErrors("data.id");
+            'data' => [
+                'type' => 'articles',
+                'id' => 'non-existing',
+            ],
+        ])->assertJsonApiValidationErrors('data.id');
 
-        $this->assertDatabaseHas("comments", [
-            "body" => $comment->body,
-            "article_id" => $comment->article_id
+        $this->assertDatabaseHas('comments', [
+            'body' => $comment->body,
+            'article_id' => $comment->article_id,
         ]);
     }
 }

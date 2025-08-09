@@ -3,9 +3,8 @@
 namespace Tests\Feature\Comments;
 
 use Tests\TestCase;
-use App\Models\Comment;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthorRelationshipTest extends TestCase
@@ -15,34 +14,34 @@ class AuthorRelationshipTest extends TestCase
     /** @test */
     public function can_fetch_the_associated_author_identifier()
     {
-        //self::markTestSkipped();
+        // self::markTestSkipped();
         $comment = Comment::factory()->create();
-        $url = route("api.v1.comments.relationships.author", $comment);
+        $url = route('api.v1.comments.relationships.author', $comment);
 
         $response = $this->getJson($url);
 
         $response->assertExactJson([
-            "data" => [
-                "type" => "author",
-                "id" => (string) $comment->author->getRouteKey(),
-            ]
+            'data' => [
+                'type' => 'author',
+                'id' => (string) $comment->author->getRouteKey(),
+            ],
         ])->assertOk();
     }
 
     /** @test */
     public function can_fetch_the_associated_author_resource()
     {
-        //self::markTestSkipped();
+        // self::markTestSkipped();
         $comment = Comment::factory()->create();
-        $url = route("api.v1.comments.author", $comment);
+        $url = route('api.v1.comments.author', $comment);
 
         $this->getJson($url)->assertJson([
-            "data" => [
-                "type" => "author",
-                "id" => (string) $comment->author->getRouteKey(),
-                "attributes" => [
-                    "name" => $comment->author->name
-                ]
+            'data' => [
+                'type' => 'author',
+                'id' => (string) $comment->author->getRouteKey(),
+                'attributes' => [
+                    'name' => $comment->author->name,
+                ],
             ]]);
     }
 
@@ -52,23 +51,23 @@ class AuthorRelationshipTest extends TestCase
         $author = User::factory()->create();
         $comment = Comment::factory()->create();
 
-        $url = route("api.v1.comments.relationships.author", $comment);
+        $url = route('api.v1.comments.relationships.author', $comment);
 
         $response = $this->patchJson($url, [
-            "data" => [
-                "type" => "author",
-                "id" => $author->id,
+            'data' => [
+                'type' => 'author',
+                'id' => $author->id,
             ]]);
 
         $response->assertExactJson([
-            "data" => [
-                "type" => "author",
-                "id" => $author->id,
+            'data' => [
+                'type' => 'author',
+                'id' => $author->id,
             ]]);
 
-        $this->assertDatabaseHas("comments", [
-            "body" => $comment->body,
-            "user_id" => $author->id,
+        $this->assertDatabaseHas('comments', [
+            'body' => $comment->body,
+            'user_id' => $author->id,
         ]);
     }
 
@@ -76,13 +75,13 @@ class AuthorRelationshipTest extends TestCase
     public function author_must_exist_in_database()
     {
         $comment = Comment::factory()->create();
-        $url = route("api.v1.comments.relationships.author", $comment);
+        $url = route('api.v1.comments.relationships.author', $comment);
 
         $this->patchJson($url, [
-            "data" => [
-                "type" => "author",
-                "id" => 9999, // Assuming this ID does not exist
-            ]
-        ])->assertJsonApiValidationErrors("data.id");
+            'data' => [
+                'type' => 'author',
+                'id' => 9999, // Assuming this ID does not exist
+            ],
+        ])->assertJsonApiValidationErrors('data.id');
     }
 }

@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //! Usarse con precaucion posible asignacion masiva
+        // ! Usarse con precaucion posible asignacion masiva
         Model::unguard();
     }
 }

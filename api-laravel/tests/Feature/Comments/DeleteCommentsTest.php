@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\Comments;
 
-use App\Models\Comment;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Comment;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteCommentsTest extends TestCase
 {
@@ -18,12 +17,12 @@ class DeleteCommentsTest extends TestCase
     {
         $comment = Comment::factory()->create();
 
-        $this->deleteJson(route("api.v1.comments.destroy", $comment)
+        $this->deleteJson(route('api.v1.comments.destroy', $comment)
         )->assertJsonApiError(
-                title: "Unauthenticated",
-                detail: "This action requires authentication.",
-                status: "401"
-            );
+            title: 'Unauthenticated',
+            detail: 'This action requires authentication.',
+            status: '401'
+        );
 
     }
 
@@ -32,12 +31,12 @@ class DeleteCommentsTest extends TestCase
     {
         $comment = Comment::factory()->create();
 
-        Sanctum::actingAs($comment->author, ["comment:delete"]);
+        Sanctum::actingAs($comment->author, ['comment:delete']);
 
-        $this->deleteJson(route("api.v1.comments.destroy", $comment)
+        $this->deleteJson(route('api.v1.comments.destroy', $comment)
         )->assertNoContent();
 
-        $this->assertDatabaseCount("comments", 0);
+        $this->assertDatabaseCount('comments', 0);
     }
 
     /** @test */
@@ -45,11 +44,11 @@ class DeleteCommentsTest extends TestCase
     {
         $comment = Comment::factory()->create();
 
-        Sanctum::actingAs(User::factory()->create(), ["comment:delete"]);
+        Sanctum::actingAs(User::factory()->create(), ['comment:delete']);
 
-        $this->deleteJson(route("api.v1.comments.destroy", $comment)
+        $this->deleteJson(route('api.v1.comments.destroy', $comment)
         )->assertForbidden();
 
-        $this->assertDatabaseCount("comments", 1);
+        $this->assertDatabaseCount('comments', 1);
     }
 }

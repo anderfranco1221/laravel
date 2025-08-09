@@ -28,14 +28,13 @@ class SaveCommentsRequest extends FormRequest
             'data.attributes.body' => ['required'],
             'data.relationships.article.data.id' => [
                 Rule::requiredIf(! $this->route('comment')),
-                Rule::exists("articles", "id")
+                Rule::exists('articles', 'id'),
             ],
             'data.relationships.author.data.id' => [
                 Rule::requiredIf(! $this->route('comment')),
-                Rule::exists("users", "id")
+                Rule::exists('users', 'id'),
             ],
 
         ];
     }
-
 }

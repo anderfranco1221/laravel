@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\AuthorResources;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\AuthorResources;
 
 class CommentAuthorController extends Controller
 {
@@ -22,7 +22,6 @@ class CommentAuthorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -44,7 +43,6 @@ class CommentAuthorController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -56,9 +54,8 @@ class CommentAuthorController extends Controller
 
         $userId = $request->input('data.id');
 
-        $comment->update(["user_id" => $userId]);
+        $comment->update(['user_id' => $userId]);
 
         return AuthorResources::identifier($comment->author);
     }
-
 }

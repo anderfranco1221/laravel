@@ -3,7 +3,9 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 trait JsonApiResource
@@ -124,15 +126,23 @@ trait JsonApiResource
             }
         }
 
-        $collection->with['links'] = ['self' => $resources->path()];
+        $collection->with['links'] = ['self' => request()->path()];
 
         return $collection;
     }
 
-    public static function identifier($resource): array
+    public static function identifier(Model $resource): array
     {
         return Document::type($resource->getResourceType())
             ->id($resource->getRoutekey())
             ->toArray();
+    }
+
+    public static function identifiers(Collection $resource): array
+    {
+        return $resource->isEmpty() ?
+            Document::empty() : Document::type($resource->first()->getResourceType())
+                ->ids($resource)
+                ->toArray();
     }
 }

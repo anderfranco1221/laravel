@@ -14,6 +14,7 @@ use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
+use App\Http\Controllers\Api\ArticleCommentsController;
 
 /*
 Route::bind('article', function($article){
@@ -32,56 +33,62 @@ Route::apiResource('author', AuthorController::class)
     ->only('index', 'show');
 
 Route::prefix('comments/{comment}')
-    ->group(function (){
+    ->group(function () {
 
-    Route::controller(CommentArticleController::class)
-        ->group(function () {
-            Route::get('relationships/article', 'index')
-                ->name('comments.relationships.article');
-            Route::get('article', 'show')
-                ->name('comments.article');
-            Route::patch('relationships/article', 'update');
+        Route::controller(CommentArticleController::class)
+            ->group(function () {
+                Route::get('relationships/article', 'index')
+                    ->name('comments.relationships.article');
+                Route::get('article', 'show')
+                    ->name('comments.article');
+                Route::patch('relationships/article', 'update');
                 /* ->name('comments.relationships.article') */
+            });
+
+        Route::controller(CommentAuthorController::class)
+            ->group(function () {
+                Route::get('relationships/author', 'index')
+                    ->name('comments.relationships.author');
+                Route::get('author', 'show')
+                    ->name('comments.author');
+                Route::patch('relationships/author', 'update');
+
+            });
     });
-
-    Route::controller(CommentAuthorController::class)
-        ->group(function () {
-            Route::get('relationships/author', 'index')
-                ->name('comments.relationships.author');
-            Route::get('author', 'show')
-                ->name('comments.author');
-            Route::patch('relationships/author', 'update');
-
-        });
-});
-
-
 
 Route::prefix('articles/{article}')
     ->group(function () {
         Route::controller(ArticleCategoryController::class)
-            //->prefix('articles/{article}')
+            // ->prefix('articles/{article}')
             ->group(function () {
                 Route::get('relationships/category', 'index')
                     ->name('articles.relationships.category');
                 Route::get('category', 'show')
                     ->name('articles.category');
                 Route::patch('relationships/category', 'update');
-                    /* ->name('articles.relationships.category') */
-        });
-
+                /* ->name('articles.relationships.category') */
+            });
 
         Route::controller(ArticleAuthorController::class)
-                //->prefix('articles/{article}')
-                ->group(function () {
-                    Route::get('relationships/author', 'index')
-                        ->name('articles.relationships.author');
-                    Route::get('author', 'show')
-                        ->name('articles.author');
-                    Route::patch('relationships/author', 'update');
-                        /* ->name('articles.relationships.author') */
-        });
-});
+                // ->prefix('articles/{article}')
+            ->group(function () {
+                Route::get('relationships/author', 'index')
+                    ->name('articles.relationships.author');
+                Route::get('author', 'show')
+                    ->name('articles.author');
+                Route::patch('relationships/author', 'update');
+                /* ->name('articles.relationships.author') */
+            });
+
+        Route::controller(ArticleCommentsController::class)
+            ->group(function () {
+                Route::get('relationships/comments', 'index')
+                    ->name('articles.relationships.comments');
+
+                Route::get('comments', 'show')
+                    ->name('articles.comments');
+            });
+    });
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])
     ->group(function () {
         Route::post('login', LogginController::class)->name('login');
@@ -89,5 +96,3 @@ Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders
         Route::post('register', RegisterController::class)->name('register');
 
     });
-
-

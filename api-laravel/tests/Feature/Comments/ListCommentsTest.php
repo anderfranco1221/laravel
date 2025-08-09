@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Comments;
 
+use Tests\TestCase;
 use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 
 class ListCommentsTest extends TestCase
 {
@@ -21,7 +20,7 @@ class ListCommentsTest extends TestCase
         $response->assertJsonApiResource($comment, [
             'body' => $comment->body,
         ]);
-        //->assertJsonApiRelationshipLinks($comment);
+        // ->assertJsonApiRelationshipLinks($comment);
     }
 
     /** @test */

@@ -23,7 +23,6 @@ class CommentArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -45,20 +44,18 @@ class CommentArticleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Comment $comment, Request $request): array
     {
-        $request->validate(["data.id" => ["exists:articles,id"]]);
+        $request->validate(['data.id' => ['exists:articles,id']]);
 
-        $articleId = $request->input("data.id");
+        $articleId = $request->input('data.id');
         $article = Article::findOrFail($articleId);
 
-        $comment->update(["article_id" => $article->id]);
+        $comment->update(['article_id' => $article->id]);
 
         return ArticleResource::identifier($article);
     }
-
 }

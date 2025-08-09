@@ -12,7 +12,7 @@ class CommentResource extends JsonResource
     public function toJsonApi(): array
     {
         return [
-            "body" => $this->resource->body,
+            'body' => $this->resource->body,
         ];
     }
 }

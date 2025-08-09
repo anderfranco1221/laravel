@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
-
     protected $model = Comment::class;
 
     /**
@@ -23,7 +22,7 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            "body" => $this->faker->paragraphs(3, true),
+            'body' => $this->faker->paragraphs(3, true),
             'article_id' => Article::factory(),
             'user_id' => User::factory(),
         ];
