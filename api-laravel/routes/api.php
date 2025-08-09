@@ -87,6 +87,8 @@ Route::prefix('articles/{article}')
 
                 Route::get('comments', 'show')
                     ->name('articles.comments');
+
+                Route::patch('relationships/comments', 'update');
             });
     });
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])

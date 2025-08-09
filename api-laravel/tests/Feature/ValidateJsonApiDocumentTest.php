@@ -81,6 +81,15 @@ class ValidateJsonApiDocumentTest extends TestCase
             ],
         ])
             ->assertJsonApiValidationErrors('data.type');
+
+        $this->patchJson('test_route', [
+            'data' => [
+                [
+                    "id" => "1",
+                    "type" => 'string',
+                ]
+            ],
+        ])->assertSuccessful();
     }
 
     /** @test */
