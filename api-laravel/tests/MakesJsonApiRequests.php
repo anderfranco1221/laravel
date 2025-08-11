@@ -40,7 +40,7 @@ trait MakesJsonApiRequests
         return $this;
     }
 
-    public function json($method, $uri, array $data = [], array $headers = []): TestResponse
+    public function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
 
         if ($this->addJsonApiHeaders) {
@@ -55,7 +55,7 @@ trait MakesJsonApiRequests
             $formattedData = $this->getFormattedDatta($uri, $data);
         }
 
-        return parent::json($method, $uri, $formattedData ?? $data, $headers);
+        return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
     public function getFormattedDatta($uri, array $data): array
