@@ -40,6 +40,9 @@ class ArticleCommentsController extends Controller
      */
     public function update(Article $article, Request $request): array
     {
+
+        $request->validate(['data.*.id' => ['exists:comments,id']]);
+
         $commentIds = $request->input('data.*.id');
 
         $comments = Comment::whereIn('id', $commentIds)->get();
@@ -51,14 +54,4 @@ class ArticleCommentsController extends Controller
         return CommentResource::identifiers($comments);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

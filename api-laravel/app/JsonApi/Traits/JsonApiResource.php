@@ -3,9 +3,9 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\MissingValue;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 trait JsonApiResource
@@ -22,15 +22,17 @@ trait JsonApiResource
     {
         // * Agrega las relaciones del objeto
         if ($request->filled('include')) {
+
             foreach ($this->getIncludes() as $include) {
-                if ($include->resource instanceof MissingValue) {
+
+                if($include->resource instanceof Collection){
+                    $include->resource->each(fn ($r) => $this->with['included'][] = $r );
                     continue;
                 }
 
-                $this->with['included'][] = $include;
+                $include->resource instanceof MissingValue ?: $this->with['included'][] = $include;
             }
-
-            $this->with['included'] = $this->getIncludes();
+            //$this->with['included'] = $this->getIncludes();
         }
 
         // Estructura de la respuesta segun el objeto
@@ -115,7 +117,7 @@ trait JsonApiResource
 
         // * Insercion de las relaciones
         if (request()->filled('include')) {
-            foreach ($resources as $resource) {
+            foreach ($collection->resource as $resource) {
                 foreach ($resource->getIncludes() as $include) {
                     if ($include->resource instanceof MissingValue) {
                         continue;

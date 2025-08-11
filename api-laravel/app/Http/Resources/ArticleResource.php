@@ -29,6 +29,7 @@ class ArticleResource extends JsonResource
         return array_values(array_filter([
             CategoryResource::make($this->whenLoaded('category')),
             AuthorResources::make($this->whenLoaded('author')),
+            CommentResource::collection($this->whenLoaded('comments'))
         ], function ($item) {
             $test = (array) $item;
 
