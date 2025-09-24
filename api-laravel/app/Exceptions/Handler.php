@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->renderable(fn (NotFoundHttpException $e) => throw new JsonApi\NotFoundHttpException);
+        $this->renderable(fn (NotFoundHttpException $e) => throw new JsonApi\NotFoundHttpException($e->getMessage()));
         $this->renderable(fn (BadRequestHttpException $e) => throw new JsonApi\BadRequestHttpException($e->getMessage()));
 
         $this->renderable(fn (AuthenticationException $e) => throw new JsonApi\AuthenticationException);

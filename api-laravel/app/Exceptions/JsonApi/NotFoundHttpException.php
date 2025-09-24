@@ -3,6 +3,7 @@
 namespace App\Exceptions\JsonApi;
 
 use Exception;
+use Illuminate\Support\Str;
 
 class NotFoundHttpException extends Exception
 {
@@ -14,15 +15,22 @@ class NotFoundHttpException extends Exception
      */
     public function render($request)
     {
-        $id = $request->input('data.id');
-        $type = $request->input('data.type');
-
         return response()->json([
             'errors' => [[
                 'title' => 'Not Found',
-                'detail' => "No records found with the id '{$id}' in the '{$type}' resource.",
+                'detail' => $this->getDetail($request),
                 'status' => '404',
             ]],
         ], 404);
+    }
+
+    protected function getDetail($request): string{
+        $detail = $this->getMessage();
+
+        if(str($this->getMessage())->startsWith("No query results for model")){
+            $detail = "No records found with the id '{$request->getResourceId()}' in the '{$request->getResourceType()}' resource.";
+        }
+
+        return $detail;
     }
 }

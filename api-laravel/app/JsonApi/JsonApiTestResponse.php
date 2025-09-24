@@ -12,7 +12,7 @@ class JsonApiTestResponse
 {
     public function assertJsonApiError(): Closure
     {
-        return function ($title = null, $detail = null, $status = null) {
+        return function ($title = null, $detail = null, $status = "404") {
             /** @var TestResponse $this */
             try {
                 $this->assertJsonStructure([
