@@ -4,7 +4,9 @@ namespace App\Exceptions\JsonApi;
 
 use Exception;
 use Illuminate\Support\Str;
-
+/**
+ * ! La expcion fue deprecada en favor de App\Exceptions\JsonApi\HttpException
+ */
 class NotFoundHttpException extends Exception
 {
     /**

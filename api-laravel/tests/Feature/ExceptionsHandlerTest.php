@@ -23,4 +23,18 @@ class ExceptionsHandlerTest extends TestCase
                 detail: "The route api/v1/invalid-route could not be found."
             );
     }
+
+    /** @test */
+    public function default_laravel_error_is_only_shown_to_requests_without_the_prefix_api()
+    {
+        $this->getJson("non/api/route")
+            ->assertJson([
+                "message" => "The route non/api/route could not be found.",
+            ]);
+
+        $this->withoutJsonApiHelpers()->getJson("non/api/route")
+            ->assertJson([
+                "message" => "The route non/api/route could not be found.",
+            ]);
+    }
 }
