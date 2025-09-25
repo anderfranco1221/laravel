@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Responses;
+namespace App\JsonApi\Http\Responses;
 
 use App\Models\User;
 use Illuminate\Contracts\Support\Responsable;

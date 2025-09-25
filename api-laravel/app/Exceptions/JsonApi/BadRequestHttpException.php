@@ -4,6 +4,9 @@ namespace App\Exceptions\JsonApi;
 
 use Exception;
 
+/**
+ * ! La expcion fue deprecada en favor de App\Exceptions\JsonApi\HttpException
+ */
 class BadRequestHttpException extends Exception
 {
     /**

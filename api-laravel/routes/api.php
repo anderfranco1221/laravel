@@ -6,15 +6,15 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\Api\LogginController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CommentController;
-use App\Http\Middleware\ValidateJsonApiHeaders;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\RegisterController;
-use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\ArticleAuthorController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 use App\Http\Controllers\Api\ArticleCommentsController;
+use App\JsonApi\Http\Middleware\ValidateJsonApiHeaders;
+use App\JsonApi\Http\Middleware\ValidateJsonApiDocument;
 
 /*
 Route::bind('article', function($article){

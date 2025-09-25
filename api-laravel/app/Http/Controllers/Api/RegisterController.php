@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Responses\TokenResponses;
+use App\JsonApi\Http\Responses\TokenResponses;
+
 
 class RegisterController extends Controller
 {

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Responses\TokenResponses;
+use App\JsonApi\Http\Responses\TokenResponses;
 use Illuminate\Validation\ValidationException;
 
 class LogginController extends Controller
